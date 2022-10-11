@@ -1,3 +1,4 @@
+using CookInspiration.Services.RecipeService;
 using CookInspirationBlazor.Areas.Identity;
 using CookInspirationBlazor.Data;
 using Microsoft.AspNetCore.Components;
@@ -20,6 +21,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddTransient<IRecipeService, RecipeService>();
 
 var app = builder.Build();
 
