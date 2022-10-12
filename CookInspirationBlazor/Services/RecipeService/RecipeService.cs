@@ -20,7 +20,7 @@ namespace CookInspiration.Services.RecipeService
         {
             _httpClient = new HttpClient();
 
-            using HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7182/api/Recipes");
+            using HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7043/api/Recipes");
 
             response.EnsureSuccessStatusCode();
 

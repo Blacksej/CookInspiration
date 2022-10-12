@@ -239,7 +239,7 @@ namespace CookInspirationAPI.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("RecipeModelLibrary.Models.Recipe", b =>
@@ -264,7 +264,7 @@ namespace CookInspirationAPI.Migrations
 
                     b.HasKey("RecipeId");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("RecipeModelLibrary.Models.Step", b =>
@@ -286,7 +286,7 @@ namespace CookInspirationAPI.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Steps");
+                    b.ToTable("Steps", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
