@@ -82,5 +82,14 @@ namespace CookInspirationAPI.Controllers
 
             return CreatedAtAction(nameof(CreateRecipe), new { id = recipe.RecipeId }, recipe);
         }
+
+        //[HttpGet("ingredients")]
+        //public async Task<IActionResult> GetIngredientsForRecipe()
+        //{
+        //    var recipe = await _context.Recipes
+        //        .FirstOrDefaultAsync(recipe => recipe.RecipeId == id);
+
+        //    return Ok(recipes);
+        //}
     }
 }

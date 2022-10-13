@@ -29,6 +29,9 @@
                 </td>
 
                 <td>@recipe.Description</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => ShowRecipe(recipe.RecipeId))"><i class=""></i></button>
+                </td>
             </tr>
         }
     </tbody>
@@ -38,5 +41,10 @@
     protected override async Task OnInitializedAsync()
     {
         await IRecipeService.GetRecipes();
+    }
+
+    void ShowRecipe(int id)
+    {
+        NavigationManager.NavigateTo($"recipe/{id}");
     }
 }

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookInspirationBlazor", "CookInspirationBlazor\CookInspirationBlazor.csproj", "{1E6BA901-5FF9-4038-9236-A686F892C895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookInspirationBlazor", "CookInspirationBlazor\CookInspirationBlazor.csproj", "{1E6BA901-5FF9-4038-9236-A686F892C895}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeModelLibrary", "RecipeModelLibrary\RecipeModelLibrary.csproj", "{3A99408A-EBC1-468D-8CC7-54ADB5A829E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeModelLibrary", "RecipeModelLibrary\RecipeModelLibrary.csproj", "{3A99408A-EBC1-468D-8CC7-54ADB5A829E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookInspirationAPI", "CookInspirationAPI\CookInspirationAPI.csproj", "{137806EE-C264-476F-B75F-2A9AE683AD88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookInspirationAPI", "CookInspirationAPI\CookInspirationAPI.csproj", "{137806EE-C264-476F-B75F-2A9AE683AD88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

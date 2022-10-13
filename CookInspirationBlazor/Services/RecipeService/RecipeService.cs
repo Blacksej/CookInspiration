@@ -9,6 +9,7 @@ namespace CookInspiration.Services.RecipeService
         HttpClient _httpClient;
         NavigationManager _navigationManager;
         public List<Recipe> Recipes { get; set; } = new List<Recipe>();
+        public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 
         //public RecipeService(HttpClient http, NavigationManager navigationManager)
         //{
@@ -32,6 +33,28 @@ namespace CookInspiration.Services.RecipeService
             {
                 Recipes = recipes;
             }
+        }
+
+        public async Task<Recipe> GetSingleRecipe(int id)
+        {
+            _httpClient = new HttpClient();
+
+            using HttpResponseMessage response = await _httpClient.GetAsync($"https://localhost:7043/api/Recipes/{id}");
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var recipe = JsonSerializer.Deserialize<Recipe>(jsonResponse);
+
+            Ingredients = recipe.Ingredients;
+
+            if (recipe != null)
+            {
+                return recipe;
+            }
+
+            throw new Exception("Recipe not found!");
         }
 
         public async Task CreateRecipe(Recipe recipe)
