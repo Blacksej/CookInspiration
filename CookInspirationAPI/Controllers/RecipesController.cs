@@ -42,18 +42,31 @@ namespace CookInspirationAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditRecipe(int id, [FromBody] Recipe recipe)
+        public async Task<IActionResult> EditRecipe(int id, Recipe recipe)
         {
+            var dbRecipe = await _context.Recipes.AsNoTracking()
+                .Include("Ingredients")
+                .Include("Steps")
+                .FirstOrDefaultAsync(x => x.RecipeId == id);
+
             if (id != recipe.RecipeId)
             {
                 return BadRequest();
             }
 
+            dbRecipe.Name = recipe.Name;
+            dbRecipe.Description = recipe.Description;
+            //dbRecipe.Steps = recipe.Steps;
+
+            dbRecipe.Image = recipe.Image;
+            dbRecipe.Ingredients = recipe.Ingredients;
+            
+
             _context.Entry(recipe).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(await GetAllRecipes());
         }
 
         [HttpDelete("{id}")]
@@ -77,6 +90,19 @@ namespace CookInspirationAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRecipe([FromBody] Recipe recipe)
         {
+            List<Ingredient> tempIngredients = new List<Ingredient>();
+
+            if(recipe.Ingredients != null)
+            {
+                foreach (var ingredient in recipe.Ingredients)
+                {
+                    var ingredientFromId = await _context.Ingredients.FirstOrDefaultAsync(x => x.IngredientId == ingredient.IngredientId);
+                    tempIngredients.Add(ingredientFromId);
+                }
+
+                recipe.Ingredients = tempIngredients;
+            }
+
             _context.Recipes.Add(recipe);
             await _context.SaveChangesAsync();
 

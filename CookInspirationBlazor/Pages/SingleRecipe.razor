@@ -1,8 +1,6 @@
 ﻿@page "/recipe"
 @page "/recipe/{id:int}"
 @using RecipeModelLibrary.Models
-@using Syncfusion.Blazor.DropDowns
-@using Syncfusion.Blazor.Buttons
 @inject IRecipeService IRecipeService
 
 @if (Id == null)
@@ -30,16 +28,40 @@ else
         <InputText id="image" @bind-Value="recipe.Image" class="form-control"></InputText>
     </div>
     <div>
-        <label>Ingredients</label><br />
-        <InputSelect @bind-Value="recipe.Ingredients" class="form-select">
-            @foreach (var ingredient in IRecipeService.Ingredients)
-            {
-                <option value="@ingredient.IngredientId">@ingredient.NameAndAmount</option>
-            }
-        </InputSelect>
+        <div class="container-fluid">
+            <div class="row row-cols-2">
+                <div class="col">
+                    <ul class="list-group" style="padding-top: 5px">
+                        <li style="font-weight: bold" class="list-group-item list-group-item-primary">Available Ingredients:</li>
+                        @foreach (var ingredient in IRecipeService.AllIngredients)
+                        {
+                            <li class="list-group-item">
+                                <input type="checkbox" class="form-check-input" @onchange="args=>SelectedIngredientChanged(args, ingredient)" />
+                                @ingredient.NameAndAmount
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="col">
+                    <ul class="list-group" style="padding-top: 5px">
+                        <li style="font-weight: bold" class="list-group-item list-group-item-primary">Added Ingredients:</li>
+                        @foreach (var ing in SelectedIngredients)
+                        {
+                            <li class="list-group-item">@ing.NameAndAmount</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="row row-cols-2">
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 5px">@btnText</button>
+                </div>
+                <div class="col-6">
+                    <p>The above ingredient(s) will be added to the recipe when submitting</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <br />
-    <button type="submit" class="btn btn-primary">@btnText</button>
 </EditForm>
 
 @code {
@@ -50,9 +72,12 @@ else
 
     string btnText = string.Empty;
 
+    List<Ingredient> SelectedIngredients { get; set; } = new List<Ingredient>();
+
     protected override async Task OnInitializedAsync()
     {
         btnText = Id == null ? "Save new recipe" : "Update recipe";
+        await IRecipeService.GetIngredients();
         await IRecipeService.GetRecipes();
     }
 
@@ -60,7 +85,7 @@ else
     {
         if (Id == null)
         {
-            recipe.Ingredients = IRecipeService.Ingredients;
+            recipe.Ingredients = IRecipeService.RecipeIngredients;
         }
         else
         {
@@ -70,7 +95,15 @@ else
 
     async Task HandleSubmit()
     {
-        if(Id == null)
+        foreach (var ingredient in SelectedIngredients)
+        {
+            if (!recipe.Ingredients.Exists(id => id.IngredientId == ingredient.IngredientId))
+            {
+                recipe.Ingredients.Add(ingredient);
+            }
+        }
+
+        if (Id == null)
         {
             await IRecipeService.CreateRecipe(recipe);
         }
@@ -80,8 +113,22 @@ else
         }
     }
 
-    async Task DeleteHero()
+    async Task DeleteRecipe()
     {
         await IRecipeService.DeleteRecipe(recipe.RecipeId);
     }
-}
+
+    private void SelectedIngredientChanged(ChangeEventArgs args, Ingredient ingredient)
+    {
+        bool IsSelected = (bool)args.Value;
+
+        if (SelectedIngredients.Contains(ingredient) == false && IsSelected)
+        {
+            SelectedIngredients.Add(ingredient);
+        }
+        else
+        {
+            SelectedIngredients.Remove(ingredient);
+        }
+    }
+    }

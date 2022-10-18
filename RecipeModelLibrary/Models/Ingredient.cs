@@ -10,10 +10,8 @@ namespace RecipeModelLibrary.Models
         [JsonPropertyName("nameAndAmount")]
         public string NameAndAmount { get; set; }
 
-        [JsonPropertyName("recipeId")]
-        public int? RecipeId { get; set; }
+        [JsonPropertyName("recipes")]
+        public List<Recipe>? Recipes { get; set; }
 
-        [JsonPropertyName("recipe")]
-        public Recipe? Recipe { get; set; }
     }
 }

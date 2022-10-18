@@ -6,21 +6,20 @@ namespace CookInspiration.Services.RecipeService
 {
     public class RecipeService : IRecipeService
     {
-        HttpClient _httpClient;
-        NavigationManager _navigationManager;
+        private readonly HttpClient _httpClient;
+        private readonly NavigationManager _navigationManager;
         public List<Recipe> Recipes { get; set; } = new List<Recipe>();
-        public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+        public List<Ingredient> RecipeIngredients { get; set; } = new List<Ingredient>();
+        public List<Ingredient> AllIngredients { get; set; } = new List<Ingredient>();
 
-        //public RecipeService(HttpClient http, NavigationManager navigationManager)
-        //{
-        //    _httpClient = http;
-        //    _navigationManager = navigationManager;
-        //}
+        public RecipeService(HttpClient http, NavigationManager navigationManager)
+        {
+            _httpClient = http;
+            _navigationManager = navigationManager;
+        }
 
         public async Task GetRecipes()
         {
-            _httpClient = new HttpClient();
-
             using HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7043/api/Recipes");
 
             response.EnsureSuccessStatusCode();
@@ -35,10 +34,24 @@ namespace CookInspiration.Services.RecipeService
             }
         }
 
+        public async Task GetIngredients()
+        {
+            using HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7043/api/Ingredients");
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var ingredients = JsonSerializer.Deserialize<List<Ingredient>>(jsonResponse);
+
+            if (ingredients != null)
+            {
+                AllIngredients = ingredients;
+            }
+        }
+
         public async Task<Recipe> GetSingleRecipe(int id)
         {
-            _httpClient = new HttpClient();
-
             using HttpResponseMessage response = await _httpClient.GetAsync($"https://localhost:7043/api/Recipes/{id}");
 
             response.EnsureSuccessStatusCode();
@@ -47,7 +60,7 @@ namespace CookInspiration.Services.RecipeService
 
             var recipe = JsonSerializer.Deserialize<Recipe>(jsonResponse);
 
-            Ingredients = recipe.Ingredients;
+            RecipeIngredients = recipe.Ingredients;
 
             if (recipe != null)
             {
@@ -59,9 +72,10 @@ namespace CookInspiration.Services.RecipeService
 
         public async Task CreateRecipe(Recipe recipe)
         {
-            var result = await _httpClient.PostAsJsonAsync("api/Recipes", recipe);
-            var response = await result.Content.ReadFromJsonAsync<List<Recipe>>();
-            Recipes = response;
+            var result = await _httpClient.PostAsJsonAsync("https://localhost:7043/api/Recipes", recipe);
+            _navigationManager.NavigateTo("recipes");
+            //var returnRecipe = await result.Content.ReadFromJsonAsync<List<Recipe>>();
+            //Recipes = returnRecipe;
         }
 
         public Task DeleteRecipe(int id)
@@ -69,18 +83,18 @@ namespace CookInspiration.Services.RecipeService
             throw new NotImplementedException();
         }
 
-        private async Task SetRecipes(HttpResponseMessage result)
+        public async Task UpdateRecipe(Recipe recipe)
         {
-            var response = await result.Content.ReadFromJsonAsync<List<Recipe>>();
-            Recipes = response;
+            var recipeResult = await _httpClient.PutAsJsonAsync($"https://localhost:7043/api/Recipes/{recipe.RecipeId}", recipe);
+
             _navigationManager.NavigateTo("recipes");
         }
 
-        public async Task UpdateRecipe(Recipe recipe)
-        {
-            var result = await _httpClient.PutAsJsonAsync($"api/Recipes/{recipe.RecipeId}", recipe);
-            var response = await result.Content.ReadFromJsonAsync<List<Recipe>>();
-            await SetRecipes(result);
-        }
+        //public async Task SetRecipes(HttpResponseMessage result)
+        //{
+        //    var jsonResponse = await result.Content.ReadFromJsonAsync<Recipe>();
+
+        //    _navigationManager.NavigateTo("recipes");
+        //}
     }
 }

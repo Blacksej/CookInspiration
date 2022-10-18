@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using RecipeModelLibrary.Data;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-builder.Services.AddTransient<IRecipeService, RecipeService>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<HttpClient>();
+
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 
 var app = builder.Build();
 
